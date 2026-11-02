@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>AI Image Demo</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest"></script>
+</head>
+
+<body>
+
+<h1>AI Nhận Diện Hình Ảnh</h1>
+
+<input type="file" id="imageUpload">
+
+<div id="result"></div>
+
+<script>
+
+const modelURL = "./model/model.json";
+const metadataURL = "./model/metadata.json";
+
+let model;
+
+async function loadModel() {
+    model = await tmImage.load(modelURL, metadataURL);
+    console.log("Model loaded");
+}
+
+loadModel();
+
+document
+.getElementById("imageUpload")
+.addEventListener("change", async function(event){
+
+    const file = event.target.files[0];
+
+    const image = document.createElement("img");
+
+    image.src = URL.createObjectURL(file);
+
+    image.onload = async () => {
+
+        const prediction =
+            await model.predict(image);
+
+        let html = "";
+
+        prediction.forEach(item => {
+
+            html +=
+                item.className +
+                ": " +
+                (item.probability * 100).toFixed(2) +
+                "%<br>";
+
+        });
+
+        document.getElementById("result")
+            .innerHTML = html;
+    };
+});
+
+</script>
+
+</body>
+</html>
