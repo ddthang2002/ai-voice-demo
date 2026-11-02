@@ -1,3 +1,0 @@
-Teachable Machine Demo
-No file chosen
-Error loading libraries. Please check the console for details.
